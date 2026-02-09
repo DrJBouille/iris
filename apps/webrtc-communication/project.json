@@ -1,0 +1,67 @@
+{
+  "name": "webrtc-communication",
+  "root": "apps/webrtc-communication",
+  "sourceRoot": "apps/webrtc-communication/src",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false
+      },
+      "configurations": {
+        "linux": {
+          "commands": [
+            "cd docker/iris && docker compose down -v",
+            "cd docker/iris && docker compose up -d --build",
+            "./gradlew quarkusDev -p apps/webrtc-communication"
+          ]
+        },
+        "windows": {
+          "commands": [
+            "cd docker/iris && docker compose down -v",
+            "cd docker/iris && docker compose up -d --build",
+            "gradle quarkusDev -p apps/webrtc-communication"
+          ]
+        }
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false
+      },
+      "configurations": {
+        "linux": {
+          "commands": [
+            "./gradlew clean build -p apps/webrtc-communication"
+          ]
+        },
+        "windows": {
+          "commands": [
+            "gradle clean build -p apps/webrtc-communication"
+          ]
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false
+      },
+      "configurations": {
+        "linux": {
+          "commands": [
+            "./gradlew test -p apps/webrtc-communication"
+          ]
+        },
+        "windows": {
+          "commands": [
+            "gradle test -p apps/webrtc-communication"
+          ]
+        }
+      }
+    }
+  },
+  "tags": ["api", "quarkus"]
+}

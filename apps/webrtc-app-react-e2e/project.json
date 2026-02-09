@@ -1,0 +1,10 @@
+{
+  "name": "webrtc-app-react-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/webrtc-app-react-e2e/src",
+  "implicitDependencies": ["webrtc-app-react"],
+  "tags": [],
+  "// targets": "to see all targets run: nx show project webrtc-app-react-e2e --web",
+  "targets": {}
+}
