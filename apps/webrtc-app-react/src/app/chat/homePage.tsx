@@ -4,6 +4,7 @@ import { User } from '../authentication/type/User';
 import Discussion from '../discussion/discussion';
 import { useWebRtc } from '../service/useWebRTC';
 import IncomingCall from './component/incomingCall';
+import UserDetails from './component/user-details';
 
 function HomePage() {
   const [activeDiscussion, setActiveDiscussion] = useState<User>();
@@ -19,7 +20,10 @@ function HomePage() {
 
   return(
     <div className="w-screen h-screen grid grid-cols-6 gap-4 p-4">
-      <FriendList goToDiscussion={setActiveDiscussion}/>
+      <div className="flex flex-col h-full gap-4">
+        <FriendList goToDiscussion={setActiveDiscussion}/>
+        <UserDetails/>
+      </div>
       {activeDiscussion && <div className="col-span-5"><Discussion user={activeDiscussion} call={call} currentCallWidth={currentCallWith} hangup={hangup}/></div>}
       {incomingCall && <IncomingCall pickup={pickup} hangup={hangup} caller={caller}/>}
     </div>
