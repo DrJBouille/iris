@@ -1,10 +1,11 @@
-import FriendList from './component/friendList';
+import FriendList from './component/friend-list';
 import { useState } from 'react';
 import { User } from '../authentication/type/User';
 import Discussion from '../discussion/discussion';
 import { useWebRtc } from '../service/useWebRTC';
-import IncomingCall from './component/incomingCall';
+import IncomingCall from './component/incoming-call';
 import UserDetails from './component/user-details';
+import ActionBar from './component/action-bar';
 
 function HomePage() {
   const [activeDiscussion, setActiveDiscussion] = useState<User>();
@@ -24,7 +25,12 @@ function HomePage() {
         <FriendList goToDiscussion={setActiveDiscussion}/>
         <UserDetails/>
       </div>
-      {activeDiscussion && <div className="col-span-5"><Discussion user={activeDiscussion} call={call} currentCallWidth={currentCallWith} hangup={hangup}/></div>}
+      {activeDiscussion &&
+        <div className="flex flex-col gap-4 col-span-5">
+          <ActionBar call={call} currentCallWidth={currentCallWith} hangup={hangup}/>
+          <Discussion/>
+        </div>
+      }
       {incomingCall && <IncomingCall pickup={pickup} hangup={hangup} caller={caller}/>}
     </div>
   );

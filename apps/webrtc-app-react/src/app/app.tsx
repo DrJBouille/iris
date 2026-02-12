@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { signalingService } from './service/signalingService';
+import { signalingService } from './service/signaling-service';
 import AuthProvider from './authentication/auth-provider';
-import HomePage from './chat/homePage';
+import HomePage from './chat/home-page';
 
 export function App() {
   useEffect(() => {

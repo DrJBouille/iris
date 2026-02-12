@@ -1,0 +1,31 @@
+import SquareIconButton from '../../shared/button/square-icon-button';
+import { PhoneCall, PhoneOff } from 'lucide-react';
+import { useAuth } from '../../authentication/auth-context';
+
+export interface ActionBarProps {
+  call: (receiver: string) => Promise<void>
+  currentCallWidth: string | null
+  hangup: () => void
+}
+
+function ActionBar({ call, currentCallWidth, hangup }: ActionBarProps) {
+  const user = useAuth();
+  if (!user) return;
+
+  return (
+    <div className="w-full flex justify-between p-2 border rounded-lg">
+      <div>
+        <p>{user.username}</p>
+      </div>
+      <div>
+        {currentCallWidth && currentCallWidth == user.username ?
+          <SquareIconButton icon={PhoneOff} onClick={() => hangup()}/>:
+          <SquareIconButton icon={PhoneCall} onClick={() => call(user.username)} />
+
+        }
+      </div>
+    </div>
+  );
+}
+
+export default ActionBar;

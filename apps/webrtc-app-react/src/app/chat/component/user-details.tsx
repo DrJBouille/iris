@@ -1,5 +1,5 @@
 import { useAuth } from '../../authentication/auth-context';
-import SquareIconButton from '../../shared/button/squareIconButton';
+import SquareIconButton from '../../shared/button/square-icon-button';
 import { SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 

@@ -1,4 +1,4 @@
-import { InputProps } from '../type/InputProps';
+import { InputProps } from '../type/Input-props';
 
 function SimpleInput({placeholder, minSize, maxSize, isDisabled, onChange}: InputProps) {
   return(

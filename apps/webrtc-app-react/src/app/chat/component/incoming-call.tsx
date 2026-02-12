@@ -1,4 +1,4 @@
-import SquareIconButton from '../../shared/button/squareIconButton';
+import SquareIconButton from '../../shared/button/square-icon-button';
 import { Phone, PhoneOff } from 'lucide-react';
 
 interface IncomingCallProps {

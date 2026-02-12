@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import SimpleButton from '../../shared/button/simpleButton';
-import { fetchOnlineUsers } from '../../service/UserService';
+import SimpleButton from '../../shared/button/simple-button';
+import { fetchOnlineUsers } from '../../service/user-service';
 import { User } from '../../authentication/type/User';
 
 interface FriendListProps {
