@@ -26,6 +26,24 @@
         }
       }
     },
+    "simple-start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false
+      },
+      "configurations": {
+        "linux": {
+          "commands": [
+            "./gradlew quarkusDev -p apps/webrtc-communication"
+          ]
+        },
+        "windows": {
+          "commands": [
+            "gradle quarkusDev -p apps/webrtc-communication"
+          ]
+        }
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {

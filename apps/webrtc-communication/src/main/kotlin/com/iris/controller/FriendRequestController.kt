@@ -29,7 +29,7 @@ class FriendRequestController {
 
     @POST
     fun createFriendRequest(friendRequestDTO: FriendRequestDTO): Response {
-        val receiver = userService.getUser(friendRequestDTO.receiverId) ?: return Response.status(Response.Status.NOT_FOUND).entity("User not found").build()
+        val receiver = userService.getByUsername(friendRequestDTO.username) ?: return Response.status(Response.Status.NOT_FOUND).entity("User not found").build()
 
         val friendRequest = friendRequestService.sendFriendRequest(receiver) ?: return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build()
 

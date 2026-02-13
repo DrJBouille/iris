@@ -50,6 +50,8 @@ class UserService {
 
     fun getByKeycloakId(keyCloakId: String) = userRepository.findByKeycloakId(keyCloakId)
 
+    fun getByUsername(username: String) = userRepository.findByUsername(username)
+
     fun getByJWTSubject() = userRepository.findByKeycloakId(jwt.subject)
 
     fun existsByUsername(username: String) = userRepository.existsByUsername(username)

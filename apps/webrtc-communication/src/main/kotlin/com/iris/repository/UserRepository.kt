@@ -8,6 +8,7 @@ import java.util.UUID
 @ApplicationScoped
 class UserRepository : PanacheRepository<IrisUser> {
     fun findByKeycloakId(keycloakId: String): IrisUser? = find("keycloakId", keycloakId).firstResult()
+    fun findByUsername(username: String): IrisUser? = find("username", username).firstResult()
     fun findById(id: UUID): IrisUser? = find("id", id).firstResult()
     fun existsByUsername(username: String): Boolean = count("username", username) > 0
     fun deleteById(id: UUID): Boolean = delete("id", id) > 0

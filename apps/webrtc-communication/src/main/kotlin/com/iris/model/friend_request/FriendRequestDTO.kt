@@ -5,5 +5,5 @@ import java.util.UUID
 
 data class FriendRequestDTO (
     @NotNull
-    val receiverId: UUID
+    val username: String
 )
