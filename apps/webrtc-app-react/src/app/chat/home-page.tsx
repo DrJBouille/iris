@@ -8,6 +8,7 @@ import ActionBar from './components/action-bar';
 import { signalingService } from './services/signaling-service';
 import { ActiveTab, ActiveTabValue } from './types/ActiveTab';
 import Friend from '../friend/friend';
+import { User } from '../authentication/type/User';
 
 function HomePage() {
   const [activeTab, setActiveTab] = useState<ActiveTabValue>({
@@ -30,6 +31,7 @@ function HomePage() {
       {(activeTab.activeTab == ActiveTab.DISCUSSION && activeTab.user) && (
         <div className="flex flex-col gap-4 col-span-5">
           <ActionBar
+            user={activeTab.user}
             call={call}
             currentCallWidth={currentCallWith}
             hangup={hangup}
@@ -38,7 +40,7 @@ function HomePage() {
         </div>
       )}
 
-      {activeTab.activeTab == ActiveTab.FRIEND && <div className="w-full h-full col-span-5"><Friend /></div>}
+      {activeTab.activeTab == ActiveTab.FRIEND && <div className="w-full h-full col-span-5"><Friend click={(user: User) => setActiveTab({user, activeTab: ActiveTab.DISCUSSION})}/></div>}
 
       {incomingCall && (
         <IncomingCall pickup={pickup} hangup={hangup} caller={caller} />

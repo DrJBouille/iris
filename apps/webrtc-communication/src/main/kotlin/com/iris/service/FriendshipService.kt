@@ -24,7 +24,7 @@ class FriendshipService {
         return friendship
     }
 
-    fun getFriends(id: UUID) = friendshipRepository.findBySenderAndReceiver(id)
+    fun getFriends(id: UUID) = friendshipRepository.findFriends(id)
 
     fun existsById(senderId: UUID, receiverId: UUID) = friendshipRepository.existsById(senderId, receiverId)
 }
