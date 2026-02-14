@@ -1,11 +1,8 @@
-import { LucideIcon } from "lucide-react";
+import { ButtonProps } from './type/ButtonProps';
 
-interface SquareButtonProps {
-  icon: LucideIcon;
-  onClick: () => void;
-}
+function SquareIconButton({ icon: Icon, onClick }: ButtonProps) {
+  if (!Icon) return;
 
-function SquareIconButton({ icon: Icon, onClick }: SquareButtonProps) {
   return (
     <button
       className=""

@@ -1,5 +1,10 @@
+import { LucideIcon } from "lucide-react";
+
 export type ButtonProps = {
-  text: string,
-  onclick: () => void,
+  text?: string,
+  icon?: LucideIcon;
+  onClick: () => void,
   type?: "button" | "submit" | "reset"
+  fit?: boolean
+  center?: boolean
 }
