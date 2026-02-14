@@ -8,8 +8,8 @@ import java.util.UUID
 @ApplicationScoped
 class FriendshipRepository : PanacheRepository<Friendship> {
     fun findBySenderAndReceiver(id: UUID): List<Friendship> {
-        return find("sender.id = ?1 and receiver.id = ?2", id, id).list()
+        return find("sender.id = ?1 OR receiver.id = ?2", id, id).list()
     }
 
-    fun existsById(id: UUID): Boolean = count("sender.id = ?1 and receiver.id = ?2", id, id) > 0
+    fun existsById(senderId: UUID, receiverId: UUID): Boolean = count("sender.id = ?1 AND receiver.id = ?2 OR sender.id = ?2 AND receiver.id = ?1", senderId, receiverId) > 0
 }

@@ -3,7 +3,6 @@ package com.iris.service
 import com.iris.model.friendship.Friendship
 import com.iris.model.user.IrisUser
 import com.iris.repository.FriendshipRepository
-import com.iris.repository.UserRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.transaction.Transactional
@@ -27,5 +26,5 @@ class FriendshipService {
 
     fun getFriends(id: UUID) = friendshipRepository.findBySenderAndReceiver(id)
 
-    fun existsById(id: UUID) = friendshipRepository.existsById(id)
+    fun existsById(senderId: UUID, receiverId: UUID) = friendshipRepository.existsById(senderId, receiverId)
 }

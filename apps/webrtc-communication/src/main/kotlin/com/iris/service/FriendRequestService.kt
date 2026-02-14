@@ -17,9 +17,15 @@ class FriendRequestService {
     @Inject
     private lateinit var userService: UserService
 
+    @Inject
+    private lateinit var friendshipService: FriendshipService
+
     @Transactional
     fun sendFriendRequest(receiver: IrisUser): FriendRequest? {
         val sender = userService.getByJWTSubject() ?: return null
+
+        if (friendRequestRepository.existsPendingBetweenUsers(sender.id!!, receiver.id!!)) return null
+        if (friendshipService.existsById(sender.id!!, receiver.id!!)) return null
 
         val friendRequest = FriendRequest().apply {
             this.sender = sender
@@ -32,9 +38,7 @@ class FriendRequestService {
 
     @Transactional
     fun changeFriendRequestStatus(status: Status, friendRequest: FriendRequest): FriendRequest {
-        val friendRequest = FriendRequest().apply {
-            this.status = status
-        }
+        friendRequest.status = status
 
         friendRequestRepository.persist(friendRequest)
         return friendRequest
@@ -42,7 +46,7 @@ class FriendRequestService {
 
     fun getFriendRequest(id: UUID) = friendRequestRepository.findById(id)
 
-    fun getReceivedFriendRequests(receiverId: UUID): List<FriendRequest> = friendRequestRepository.findByReceiverId(receiverId)
+    fun getReceivedFriendRequests(receiverId: UUID): List<FriendRequest> = friendRequestRepository.findByReceiverIdAndPending(receiverId)
 
-    fun getSendFriendRequests(senderId: UUID): List<FriendRequest> = friendRequestRepository.findBysenderId(senderId)
+    fun getSendFriendRequests(senderId: UUID): List<FriendRequest> = friendRequestRepository.findBySenderIdAndPending(senderId)
 }
