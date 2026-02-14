@@ -1,4 +1,4 @@
-import keycloak from '../authentication/keycloak';
+import keycloak from '../../authentication/keycloak';
 
 type Handler = (data: any) => void;
 

@@ -1,21 +1,4 @@
-import keycloak from '../authentication/keycloak';
+import { apiCall } from './axios-api-call';
+import { User } from '../authentication/type/User';
 
-export async function fetchOnlineUsers() {
-  if (!keycloak.authenticated) {
-    await keycloak.login();
-  }
-
-  const response = await fetch('http://localhost:9000/api/users', {
-    headers: {
-      'Authorization': `Bearer ${keycloak.token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data;
-}
+export const getUsers = () => apiCall<User[]>('get', '/users');

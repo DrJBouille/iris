@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { signalingService } from "./signaling-service";
+import { signalingService } from "../services/signaling-service";
 
 export function useWebRtc() {
   const peerRef = useRef<RTCPeerConnection | null>(null);
