@@ -7,6 +7,7 @@ import com.iris.service.FriendshipService
 import com.iris.service.UserService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
+import jakarta.transaction.Transactional
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.PUT
@@ -38,11 +39,12 @@ class FriendRequestController {
 
     @PUT
     @Path("/accept/{id}")
+    @Transactional
     fun acceptFriendRequest(@PathParam("id") id: UUID): Response {
         val user = userService.getByJWTSubject() ?: return Response.status(Response.Status.FORBIDDEN).entity("User not connected").build()
         val friendRequest = friendRequestService.getFriendRequest(id) ?: return Response.status(Response.Status.NOT_FOUND).entity("Friend request not found").build()
 
-        if (user.id != friendRequest.sender.id) return Response.status(Response.Status.FORBIDDEN).entity("You are not the receiver of this request").build()
+        if (user.id != friendRequest.receiver.id) return Response.status(Response.Status.FORBIDDEN).entity("You are not the receiver of this request").build()
 
         val newFriendRequest = friendRequestService.changeFriendRequestStatus(Status.APPROVED, friendRequest)
         friendShipService.createFriendship(newFriendRequest.sender, newFriendRequest.receiver)
@@ -52,11 +54,12 @@ class FriendRequestController {
 
     @PUT
     @Path("/reject/{id}")
+    @Transactional
     fun rejectFriendRequest(@PathParam("id") id: UUID): Response {
         val user = userService.getByJWTSubject() ?: return Response.status(Response.Status.FORBIDDEN).entity("User not connected").build()
         val friendRequest = friendRequestService.getFriendRequest(id) ?: return Response.status(Response.Status.NOT_FOUND).entity("Friend request not found").build()
 
-        if (user.id != friendRequest.sender.id) return Response.status(Response.Status.FORBIDDEN).entity("You are not the receiver of this request").build()
+        if (user.id != friendRequest.receiver.id) return Response.status(Response.Status.FORBIDDEN).entity("You are not the receiver of this request").build()
 
         val newFriendRequest = friendRequestService.changeFriendRequestStatus(Status.REJECTED, friendRequest)
 
@@ -65,6 +68,7 @@ class FriendRequestController {
 
     @PUT
     @Path("/cancel/{id}")
+    @Transactional
     fun cancelFriendRequest(@PathParam("id") id: UUID): Response {
         val user = userService.getByJWTSubject() ?: return Response.status(Response.Status.FORBIDDEN).entity("User not connected").build()
         val friendRequest = friendRequestService.getFriendRequest(id) ?: return Response.status(Response.Status.NOT_FOUND).entity("Friend request not found").build()

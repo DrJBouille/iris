@@ -39,8 +39,6 @@ class FriendRequestService {
     @Transactional
     fun changeFriendRequestStatus(status: Status, friendRequest: FriendRequest): FriendRequest {
         friendRequest.status = status
-
-        friendRequestRepository.persist(friendRequest)
         return friendRequest
     }
 
