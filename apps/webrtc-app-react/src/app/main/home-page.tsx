@@ -9,8 +9,11 @@ import { signalingService } from './services/signaling-service';
 import { ActiveTab, ActiveTabValue } from './types/ActiveTab';
 import Friend from '../friend/friend';
 import { User } from '../authentication/type/User';
+import Settings from '../settings/settings';
 
 function HomePage() {
+  const [openned, setOpened] = useState(false)
+
   const [activeTab, setActiveTab] = useState<ActiveTabValue>({
     activeTab: ActiveTab.DISCUSSION,
   });
@@ -25,7 +28,7 @@ function HomePage() {
     <div className="w-screen h-screen grid grid-cols-6 gap-4 p-4">
       <div className="flex flex-col h-full gap-4">
         <FriendList setActiveTab={setActiveTab} />
-        <UserDetails />
+        <UserDetails setOpened={setOpened} />
       </div>
 
       {(activeTab.activeTab == ActiveTab.DISCUSSION && activeTab.user) && (
@@ -45,6 +48,8 @@ function HomePage() {
       {incomingCall && (
         <IncomingCall pickup={pickup} hangup={hangup} caller={caller} />
       )}
+
+      {openned && <Settings close={setOpened}/>}
     </div>
   );
 }

@@ -1,18 +1,26 @@
 import { useAuth } from '../../authentication/auth-context';
 import SquareIconButton from '../../shared/button/square-icon-button';
-import { SettingsIcon } from 'lucide-react';
-import { useState } from 'react';
+import { LogOutIcon, SettingsIcon } from 'lucide-react';
+import keycloak from '../../authentication/keycloak';
 
-function UserDetails() {
-  const [openned, setOppened] = useState(false)
+interface UserDetailsProps {
+  setOpened: (value: boolean) => void;
+}
 
+function UserDetails({ setOpened }: UserDetailsProps) {
   const user = useAuth();
   if (!user) return;
 
   return (
     <div className="w-full rounded-lg flex justify-between border p-4">
       <p>{user.username}</p>
-      <SquareIconButton icon={SettingsIcon} onClick={() => setOppened(true)}/>
+      <div className="flex gap-2">
+        <SquareIconButton
+          icon={LogOutIcon}
+          onClick={async () => await keycloak.logout()}
+        />
+        <SquareIconButton icon={SettingsIcon} onClick={() => setOpened(true)}/>
+      </div>
     </div>
   );
 }
