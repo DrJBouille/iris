@@ -3,14 +3,23 @@ import SimpleButton from '../shared/button/simple-button';
 import { LogOutIcon, Mic } from 'lucide-react';
 import { useAuth } from '../authentication/auth-context';
 import keycloak from '../authentication/keycloak';
+import { useState } from 'react';
+import ConfirmationModal from '../shared/modal/confirmation-modal';
 
 interface SettingsProps {
   close: (value: boolean) => void,
 }
 
 function Settings({ close }: SettingsProps) {
+  const [openedConfirmLogOut, setOpenedConfirmLogOut] = useState(false);
+
   const user = useAuth();
   if (!user) return;
+
+  const logOut = async () => {
+    setOpenedConfirmLogOut(false);
+    await keycloak.logout();
+  };
 
   return (
     <div
@@ -31,11 +40,13 @@ function Settings({ close }: SettingsProps) {
           <SimpleButton
             icon={LogOutIcon}
             text="Log out"
-            onClick={async () => await keycloak.logout()}
+            onClick={() => setOpenedConfirmLogOut(true)}
           />
         </nav>
         <div className="col-span-4 border rounded-lg"></div>
       </div>
+
+      {openedConfirmLogOut && <ConfirmationModal title="Log out" text="Are you sure you want to log out ?" cancel={() => setOpenedConfirmLogOut(false)} confirm={logOut}/>}
     </div>
   );
 }
