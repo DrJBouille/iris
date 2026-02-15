@@ -10,6 +10,7 @@ import { ActiveTab, ActiveTabValue } from './types/ActiveTab';
 import Friend from '../friend/friend';
 import { User } from '../authentication/type/User';
 import Settings from '../settings/settings';
+import CurrentCallDetails from './components/current-call-details';
 
 function HomePage() {
   const [openned, setOpened] = useState(false)
@@ -28,6 +29,7 @@ function HomePage() {
     <div className="w-screen h-screen grid grid-cols-6 gap-4 p-4">
       <div className="flex flex-col h-full gap-4">
         <FriendList setActiveTab={setActiveTab} />
+        {currentCallWith && <CurrentCallDetails hangup={hangup}/>}
         <UserDetails setOpened={setOpened} />
       </div>
 
@@ -45,10 +47,7 @@ function HomePage() {
 
       {activeTab.activeTab == ActiveTab.FRIEND && <div className="w-full h-full col-span-5"><Friend click={(user: User) => setActiveTab({user, activeTab: ActiveTab.DISCUSSION})}/></div>}
 
-      {incomingCall && (
-        <IncomingCall pickup={pickup} hangup={hangup} caller={caller} />
-      )}
-
+      {incomingCall && <IncomingCall pickup={pickup} hangup={hangup} caller={caller} />}
       {openned && <Settings close={setOpened}/>}
     </div>
   );
