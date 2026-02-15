@@ -5,6 +5,7 @@ import { User } from '../../authentication/type/User';
 import Line from '../../shared/decorator/line';
 import { UserIcon } from 'lucide-react';
 import { ActiveTab, ActiveTabValue } from '../types/ActiveTab';
+import { getFriends } from '../../friend/services/friendship-service';
 
 interface FriendListProps {
   setActiveTab: (value: ActiveTabValue) => void;
@@ -14,7 +15,7 @@ function UserList({ setActiveTab }: FriendListProps) {
   const [friends, setFriends] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers().then(setFriends);
+    getFriends().then(setFriends);
   }, []);
 
   return (
