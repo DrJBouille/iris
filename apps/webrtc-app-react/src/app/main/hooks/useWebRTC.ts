@@ -104,17 +104,14 @@ export function useWebRtc() {
 
     createPeer();
 
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
         localStreamRef.current = stream;
         stream.getTracks().forEach((t) =>
           peerRef.current?.addTrack(t, stream)
         );
-      })
-      .catch((err) => {
+    }).catch((err) => {
         console.error('Microphone error:', err);
-      });
+    });
 
     const audio = new Audio();
     audio.autoplay = true;

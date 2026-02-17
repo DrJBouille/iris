@@ -5,12 +5,18 @@ import { useAuth } from '../authentication/auth-context';
 import keycloak from '../authentication/keycloak';
 import { useState } from 'react';
 import ConfirmationModal from '../shared/modal/confirmation-modal';
+import VoiceSettings from './components/voice-settings';
 
 interface SettingsProps {
   close: (value: boolean) => void,
 }
 
+enum Tab {
+  VOICE
+}
+
 function Settings({ close }: SettingsProps) {
+  const [tab, setTab] = useState(Tab.VOICE)
   const [openedConfirmLogOut, setOpenedConfirmLogOut] = useState(false);
 
   const user = useAuth();
@@ -34,7 +40,7 @@ function Settings({ close }: SettingsProps) {
           <SimpleButton
             icon={Mic}
             text="Voice"
-            onClick={() => console.log('CLICK')}
+            onClick={() => setTab(Tab.VOICE)}
           />
           <Line />
           <SimpleButton
@@ -43,7 +49,9 @@ function Settings({ close }: SettingsProps) {
             onClick={() => setOpenedConfirmLogOut(true)}
           />
         </nav>
-        <div className="col-span-4 border rounded-lg"></div>
+        <div className="col-span-4 border rounded-lg">
+          {tab == Tab.VOICE && <VoiceSettings/>}
+        </div>
       </div>
 
       {openedConfirmLogOut && <ConfirmationModal title="Log out" text="Are you sure you want to log out ?" cancel={() => setOpenedConfirmLogOut(false)} confirm={logOut}/>}
