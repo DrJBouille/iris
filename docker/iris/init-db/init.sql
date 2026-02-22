@@ -1,10 +1,10 @@
--- Base Keycloak
+-- Keycloak DB
 CREATE DATABASE keycloak;
 
--- Base Backend
+-- Iris DB
 CREATE DATABASE iris;
 
--- Créer un utilisateur pour backend
+-- Backend user
 CREATE USER admin_user WITH ENCRYPTED PASSWORD 'admin';
 GRANT ALL PRIVILEGES ON DATABASE iris TO admin_user;
 GRANT ALL ON SCHEMA public TO admin_user;
