@@ -1,30 +1,28 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres
-    container_name: postgres-global
+    image: postgres:${POSTGRES_VERSION}
+    container_name: ${POSTGRES_NAME}
     restart: unless-stopped
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: a${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
+      - ./postgres:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
 
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0
-    container_name: keycloak
+    image: quay.io/keycloak/keycloak:${KC_VERSION}
+    container_name: ${KC_NAME}
     depends_on:
       - postgres
     command: start-dev --import-realm
     environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      KC_DB_USERNAME: admin
-      KC_DB_PASSWORD: admin
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
 
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -34,8 +32,139 @@ services:
     volumes:
       - ./keycloak:/opt/keycloak/data/import
     ports:
-      - "8080:8080"
+      - "${KC_PORT}:8080"
+    restart: unless-stopped
+
+  scylla-manager:
+    image: scylladb/scylla-manager:${SCYLLA_MANAGER_VERSION}
+    container_name: ${SCYLLA_MANAGER_NAME}
+    networks:
+      public:
+    depends_on:
+      - scylla-manager-db
+
+  scylla-manager-db:
+    image: scylladb/scylla:${SCYLLA_MANAGER_DB_VERSION}
+    container_name: ${SCYLLA_MANAGER_DB_NAME}
+    volumes:
+      - scylla_manager_db_data:/var/lib/scylla
+    networks:
+      public:
+    command: --smp 1 --memory 1G
+  
+  scylla:
+    image: scylladb/scylla:${SCYLLA_VERSION}
+    container_name: ${SCYLLA_NAME}
+    volumes:
+      - scylla_data:/var/lib/scylla
+    networks:
+      public:
+        ipv4_address: 192.168.100.100
+    command: --smp 1 --memory 1G
+
+  minio:
+    image: minio/minio:${MINIO_VERSION}
+    container_name: ${MINIO_NAME}
+    volumes:
+      - minio_data:/data
+    networks:
+      public:
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_PANEL_PORT}:9001"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: [ "server", "--console-address", ":9001", "/data" ]
+
+  redis:
+    image: redis/redis-stack:${REDIS_VERSION}
+    container_name: ${REDIS_NAME}
+    expose:
+      - 6379
+      - 8001
+    command: [ "/entrypoint.sh", "./redis-stack.conf" ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    volumes:
+      - redis_data:/data
+
+# ------------------------------------------------------------
+# ------------------------ MONITORING ------------------------
+# ------------------------------------------------------------
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - public
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3010:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - public
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - public
+  
+  redis-exporter:
+    image: oliver006/redis_exporter
+    container_name: redis-exporter
+    depends_on:
+    - redis
+    environment:
+      REDIS_ADDR: redis:6379
+    ports:
+      - "9121:9121"
+    networks:
+      - public
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    depends_on:
+      - postgres
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/iris?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - public
     restart: unless-stopped
 
 volumes:
   pg_data:
+  minio_data:
+  scylla_data:
+  scylla_manager_db_data:
+  redis_data:
+  grafana_data:
+
+networks:
+  public:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
